@@ -1,5 +1,5 @@
 from __future__ import print_function
-from apiclient.discovery import build
+from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
 import gspread
@@ -12,7 +12,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', s
 client = gspread.authorize(creds)
 
 service = build('sheets', 'v4', http=creds.authorize(Http()))
-sheet = client.open('schedule base').sheet1
+sheet = client.open_by_url('https://docs.google.com/spreadsheets/d/1YACoZ05IEhpOvqXFudKqa20iApdJTv90t2fpG-aEytc/edit#gid=0').sheet1
 SPREADSHEET_ID = '1YACoZ05IEhpOvqXFudKqa20iApdJTv90t2fpG-aEytc'
 RANGE_NAME = 'Sheet1!A3:N'
 result = service.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID,
@@ -27,15 +27,12 @@ for x in range(0, 20)[::3]:
     week.append(values[x][0])
 print(week)
 monthly = []
-for y in range(1, 20)[::3]:
-    monthly.append(values[y][0])
-print(monthly)
 indices = [3, 6, 9, 12, 15, 18, 21]
-for index in range(0, 7):
+for index in range(0, 6):
     additions = []
-    print(week[index], monthly[index])
+    print(week[index])
     for x in range(0, 16):
-        if week[index] not in specific[x] and monthly[index] not in specific[x] and "All" not in specific[x]:
+        if week[index] not in specific[x] not in specific[x] and "All" not in specific[x]:
             print(names[x])
             additions.append(names[x])
             print(sheet.cell(1, 7).value)
